@@ -71,6 +71,7 @@ void AD_Init(void)
 	// 这时，内部的ADC就会一次接着一次，连续不断地，对我们指定的通道进行转换，转换结果存放在数据寄存器里面
 	// 此时数据寄存器会不断地刷新转换结果
 	// 所以在下面的AD_GetValue函数中就不需要判断标志位了
+	// 同样也不需要再次调用ADC_SoftwareStartConvCmd来触发单次转换
 	// 直接return数据寄存器的值就行了
 	// 这样程序就是单通道，连续转换非扫描的模式
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);

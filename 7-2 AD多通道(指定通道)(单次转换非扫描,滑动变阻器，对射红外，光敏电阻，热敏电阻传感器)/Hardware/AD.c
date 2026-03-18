@@ -31,10 +31,10 @@ void AD_Init(void)
 	
 	// 4.配置ADC转换器
 	ADC_InitTypeDef ADC_InitStruct;
-	ADC_InitStruct.ADC_Mode = ADC_Mode_Independent;
-	ADC_InitStruct.ADC_DataAlign = ADC_DataAlign_Right;
-	ADC_InitStruct.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
-	ADC_InitStruct.ADC_NbrOfChannel = 1;
+	ADC_InitStruct.ADC_Mode = ADC_Mode_Independent;// ADC工作模式为:ADC_Mode_Independent  独立模式
+	ADC_InitStruct.ADC_DataAlign = ADC_DataAlign_Right;// 数据对齐方式选择:ADC_DataAlign_Right:右对齐
+	ADC_InitStruct.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;// 外部触发转换选择ADC_ExternalTrigConv_None,软件触发(然后通过调用 ADC_SoftwareStartConvCmd(ADCx, ENABLE)来启动转换)
+	ADC_InitStruct.ADC_NbrOfChannel = 1;// 通道数目选择1 :指定规则通道转换序列中的总通道数为1(此参数需要与调用 ADC_RegularChannelConfig函数配置的通道序列长度一致)
 	ADC_InitStruct.ADC_ScanConvMode = DISABLE;
 	ADC_InitStruct.ADC_ContinuousConvMode = DISABLE; // 要使用ADC的ADC_ContinuousConvMode（连续转换模式），那么这个参数就要改成ENABLE
 	ADC_Init(ADC1, &ADC_InitStruct);
@@ -70,7 +70,10 @@ uint16_t AD_GetValue(uint8_t ADC_Channel)
 	
 	// 3.选择规则组的输入通道
 	// ADC_RegularChannelConfig()：配置STM32微控制器中ADC（模数转换器）规则通道组的通道、转换顺序和采样时间
+	// ADC1：指定要操作的ADC外设。ADC1, ADC2, ADC3。具体取决于您的STM32型号。
 	// ADC_Channel:选择要配置的ADC通道。ADC_Channel_0~ ADC_Channel_17。其中0-15为外部GPIO通道（如通道0对应PA0），16和17为内部通道（温度传感器、内部参考电压）。
+	// 1:指定该通道在规则组转换序列中的顺序。数值越小，转换优先级越高。例如，Rank=1表示该通道在规则组中第一个被转换。
+	// ADC_SampleTime_55Cycles5：设置该通道的采样时间，即采样保持电路的充电时间。ADC_SampleTime_55Cycles5（55.5个ADC时钟周期）。采样时间越长，转换精度一般越高，但转换速率会降低。
 	ADC_RegularChannelConfig(ADC1, ADC_Channel, 1, ADC_SampleTime_55Cycles5);
 	
 	// 通过软件触发的方式启动或停止指定ADC
