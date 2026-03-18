@@ -32,7 +32,7 @@ void AD_Init(void)
 	// 指定要操作ADC1，在规则组菜单的序列1的位置(对应参数1)，写入通道0这个通道(对应参数ADC_Channel_0)，并设置该通道的采样时间为ADC_SampleTime_55Cycles5（55.5个ADC时钟周期）。
 	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_55Cycles5);
 	
-	// 4.配置ADC转换器
+	// 4.配置ADC转换器(非连续转换非扫描模式)
 	
 	ADC_InitTypeDef ADC_InitStruct;
 	ADC_InitStruct.ADC_Mode = ADC_Mode_Independent; // ADC工作模式为:ADC_Mode_Independent  独立模式
@@ -51,6 +51,7 @@ void AD_Init(void)
 	ADC_Cmd(ADC1, ENABLE);
 	
 	// 6.ADC校准
+	
 	// 复位校准寄存器：调用 ADC_ResetCalibration(ADCx)
 	ADC_ResetCalibration(ADC1);
 	
@@ -89,11 +90,11 @@ uint16_t AD_GetValue(void)
 	// 所以这个while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);while循环大概会等待5.6us
 	
 	// 检查模数转换器 (ADC) 特定事件
-	// 指定要查询的ADC外设实例为ADC1
-	// 指定要检查的状态标志为ADC_FLAG_EOC:规则通道转换结束标志。这是最常用的标志，用于判断一次ADC转换是否完成。
+	// 参数1：指定要查询的ADC外设实例为ADC1
+	// 参数2：指定要检查的状态标志为ADC_FLAG_EOC:规则通道转换结束标志。这是最常用的标志，用于判断一次ADC转换是否完成。
 	// 返回值为 FlagStatus类型，只能是 SET(1)（标志位置位，事件已发生）或 RESET(0)（标志位复位，事件未发生）
 	// 当EOC标志位==RESET时，转换未完成，while条件为真，执行空循环
-	// 转换完成后,EOC由硬件自动置1，那while循环就自动跳出了
+	// 转换完成后,EOC由硬件自动置1，那while循环就自动跳出了，继续执行下面的代码
 	while(ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET);
 	
 	// 等待完成之后，我们就可以取结果了
