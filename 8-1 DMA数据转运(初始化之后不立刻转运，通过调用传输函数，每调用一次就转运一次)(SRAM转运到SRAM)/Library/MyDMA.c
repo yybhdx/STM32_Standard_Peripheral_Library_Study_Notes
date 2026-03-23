@@ -25,6 +25,7 @@ void MyDMA_Init(uint32_t AddrA,uint32_t AddrB, uint32_t Size)
 	DMA_InitStruct.DMA_MemoryBaseAddr = AddrB; // 外设数据寄存器的基地址为AddrB
 	DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;// 存储器数据宽度为:DMA_MemoryDataSize_Byte(8位)
 	DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable; // 存储器地址是否递增:地址递增
+	
 	DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralSRC; // 数据传输方向:外设到存储器
 	DMA_InitStruct.DMA_BufferSize = Size; // 待传输次数：Size(传输Size次)
 	DMA_InitStruct.DMA_Mode = DMA_Mode_Normal; // DMA传输模式:正常模式
@@ -52,7 +53,8 @@ void MyDMA_Init(uint32_t AddrA,uint32_t AddrB, uint32_t Size)
 
 	// 注释掉DMA_Cmd(DMA1_Channel1, ENABLE); 并关闭DMA,不让DMA初始化之后，就立刻进行转运，而是等调用Transfer函数后，再进行转运
 	// 调用一次MyDMA_Transfer就转运一次
-	
+	// 因为DMA使用的是软件触发，所以一旦 DMA 通道被使能（ENABLE），
+	// 它不需要等待任何外部硬件信号（如 ADC 转换完成或串口接收完成），它会以最高速度连续不断地搬运数据，直到传输计数器（BufferSize）减到 0 为止。
 	DMA_Cmd(DMA1_Channel1, DISABLE);
 	
 }
@@ -70,7 +72,7 @@ void MyDMA_Transfer(void)
 	// 设置指定DMA通道本次传输需要搬运的数据单元数量
 	DMA_SetCurrDataCounter(DMA1_Channel1, MyDMA_Size);
 	
-	// 使能DMA
+	// 使能DMA，DMA开始转换(因为是软件触发，所以一旦使能,DMA就开始转换)
 	DMA_Cmd(DMA1_Channel1, ENABLE);
 	
 	// 等待转运完成

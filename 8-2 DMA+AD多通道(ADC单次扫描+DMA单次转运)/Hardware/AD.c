@@ -1,5 +1,9 @@
 #include "stm32f10x.h"                  // Device header
 
+/*
+如果给AD_Value[4]加上Const修饰，那就成为了外设到Flash的转运了
+但是这样是不可取的，因为Flahs只能读不能写
+*/
 uint16_t AD_Value[4];
 
 // ADC初始化
@@ -68,7 +72,7 @@ void AD_Init(void)
 	// (uint32_t)&ADC1->DR得到的结果，其实就是刚才写的，4001244C
 	DMA_InitStruct.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR; // 外设数据寄存器的基地址，这是端菜的源头，初始把菜做好，就放在ADC_DR寄存器里，所以端菜的源头地址，就填ADC_DR的地址:0X4001244C
 	DMA_InitStruct.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord; // 外设数据宽度为:我们想要DR寄存器低16位的数据，所以数据宽度就是HalfWorld,以半字，16位来转运
-	DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable; // 外设地址是否递增:DMA_PeripheralInc_Disable(地址固定，始终转运同一个位置的数据)
+	DMA_InitStruct.DMA_PeripheralInc = DMA_PeripheralInc_Disable; // 外设地址是否递增:DMA_PeripheralInc_Disable(地址固定，始终转运同一个位置的数据，因为ADC转运的数据始终存储在ADC1->DR寄存器中，所以地址不能变化)
 	
 	DMA_InitStruct.DMA_MemoryBaseAddr = (uint32_t)AD_Value; // 外设数据寄存器的基地址:也就是端菜的目的地，我们想要把数据存在SRAM数组里，所以我们先在前面定义一个数组AD_Value[4],然后将这个数组的地址传进去
 	DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;// 存储器数据宽度为:DMA_MemoryDataSize_HalfWord：16位
@@ -77,12 +81,12 @@ void AD_Init(void)
 	DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralSRC; // 数据传输方向:外设到存储器
 	DMA_InitStruct.DMA_BufferSize = 4; // 待传输次数：4(传输4次)，因为上面我们设置了4个ADC通道，所以传输4次
 	DMA_InitStruct.DMA_Mode = DMA_Mode_Normal; // DMA传输模式:正常模式
-	DMA_InitStruct.DMA_M2M = DMA_M2M_Disable; // DMA是否应用于存储器到存储器模式:DMA_M2M_Disable：用于外设和存储器之间的传输，需要外设的DMA请求来触发。(使用硬件触发)，我们这里使用硬件出发，触发源为ADC1，厨师每个菜做好了，叫我一下，我再去端菜，这样才是合适的时机
+	DMA_InitStruct.DMA_M2M = DMA_M2M_Disable; // DMA是否应用于存储器到存储器模式:DMA_M2M_Disable：用于外设和存储器之间的传输，需要外设的DMA请求来触发，(即使用硬件触发)。我们这里使用硬件触发，触发源为ADC1，厨师每个菜做好了，叫我一下，我再去端菜，这样才是合适的时机
 	DMA_InitStruct.DMA_Priority = DMA_Priority_Medium; // 通道优先级：中等优先级
 	
 	// 指定要初始化DMA1通道1
 	// 将结构体DMA_InitStruct里面的参数配置到DMA1通道1的位置里面去
-	// 这里通道就不能任意选择了，因为是硬件出发，DMA1的请求影响图里面，ADC1的硬件触发是只接在了DMA1的通道1上,所以这里通道必须要使用DMA1的通道1，其他的通道都不行
+	// 这里通道就不能任意选择了，因为是硬件触发，DMA1的请求影响图里面，ADC1的硬件触发是只接在了DMA1的通道1上,所以这里通道必须要使用DMA1的通道1，其他的通道都不行
 	DMA_Init(DMA1_Channel1, &DMA_InitStruct);
 	
 	//DMA转运有三个条件，缺一不可
@@ -90,7 +94,7 @@ void AD_Init(void)
 	//2.触发源有触发信号
 	//3.DMA使能
 	// 根据上述代码，如果传一个大于0的Size的话，第一个条件满足
-	// 触发源为软件触发，所以一直都有触发信号，第二个条件满足
+	// 触发源为硬件触发
 	// 最后一个条件，DMA还没有使能，第三个条件不满足，所以到目前未知，DMA还不会工作
 	// 如果你想在初始化之后就立刻工作的话
 	// 可以在最后加上DMA_Cmd()
@@ -99,7 +103,7 @@ void AD_Init(void)
 	// 当传输计数器减到0之后，转运完成，同时第一个条件就不满足了，转运停止，这样就完成了一次数组之间的数据转运
 	DMA_Cmd(DMA1_Channel1, ENABLE);
 	
-	// 由于现在使用的是硬件触发，第二个条件:触发源有触发信号不满足，因为这里是硬件出发，ADC还没启动，不会有触发信号，所以这里DMA使能后不会立刻工作
+	// 由于现在使用的是硬件触发，第二个条件:触发源有触发信号不满足，因为这里是硬件触发，ADC还没启动，不会有触发信号，所以这里DMA使能后不会立刻工作
 	
 	// 最后在ADC使能之前，还要一个事前要做，就是开启ADC到DMA的输出
 	// 启用或禁用指定ADC模块的DMA传输功能
@@ -116,7 +120,7 @@ void AD_Init(void)
 	// 返回复位校准寄存器的当前状态
 	// 如果没校准完成，就在这个while空循环里一直等待
 	// 如果ADC_GetResetCalibrationStatus(ADC1)为set(1)，说明复位校准还在进行中,while循环死循环
-	// 如果ADC_GetResetCalibrationStatus(ADC1)为0，表示复位校准过程已完成 while循环会自动跳出来
+	// 如果ADC_GetResetCalibrationStatus(ADC1)为reset(0)，表示复位校准过程已完成 while循环会自动跳出来
 	while(ADC_GetResetCalibrationStatus(ADC1) == SET);
 	
 	// 启动指定ADC（模数转换器）的校准过程
@@ -130,7 +134,7 @@ void AD_Init(void)
 	
 }
 
-// 执行流程:首先，软件触发转换，然后等待转换完成，也就是等待EOC标志位置1，最后读取ADC数据寄存器就完事了
+// 执行流程:首先，软件触发ADC转换，然后等待转换完成，也就是等待EOC标志位置1，最后读取ADC数据寄存器就完事了
 // ADC开始转换，连续扫描4个通道，DMA也同步进行转运，ADC转换结果，依次放在这上面的AD_Value数组里
 void AD_GetValue(void)
 {
@@ -147,6 +151,7 @@ void AD_GetValue(void)
 	DMA_SetCurrDataCounter(DMA1_Channel1, 4);
 	
 	// 使能DMA
+	// 启用DMA1的通道1
 	DMA_Cmd(DMA1_Channel1, ENABLE);
 	
 	// 因为现在ADC还是单次模式，所以还需要软件触发一下ADC开始
@@ -155,7 +160,7 @@ void AD_GetValue(void)
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 	
 	//等待ADC转换和DMA转运完成，这里因为转运总是在转换之后，所以我们需要写等待DMA完成的代码，等待ADC转换完成的代码就不需要了
-		// 等待转运完成
+	// 等待转运完成
 	// 查询DMA传输过程中的各种状态标志
 	// 查询DMA1控制器通道1的传输完成标志
 	while(DMA_GetFlagStatus(DMA1_FLAG_TC1) == RESET);

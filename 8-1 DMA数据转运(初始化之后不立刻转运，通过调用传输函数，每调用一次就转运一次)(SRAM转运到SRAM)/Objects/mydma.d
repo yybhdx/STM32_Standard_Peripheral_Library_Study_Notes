@@ -1,7 +1,7 @@
 .\objects\mydma.o: Library\MyDMA.c
 .\objects\mydma.o: .\Start\stm32f10x.h
 .\objects\mydma.o: .\Start\core_cm3.h
-.\objects\mydma.o: D:\Software\Keil\keil_Core\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\mydma.o: E:\keil MDK\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\mydma.o: .\Start\system_stm32f10x.h
 .\objects\mydma.o: .\User\stm32f10x_conf.h
 .\objects\mydma.o: .\Library\stm32f10x_adc.h

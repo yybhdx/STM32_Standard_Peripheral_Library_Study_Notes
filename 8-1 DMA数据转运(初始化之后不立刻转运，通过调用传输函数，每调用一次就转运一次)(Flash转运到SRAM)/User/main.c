@@ -1,6 +1,7 @@
 #include "stm32f10x.h"                  // Device header
 #include "Delay.h"
 #include "OLED.h"
+#include "MyDMA.h"
 
 /*如果想要将Flash里面的数据转运到SRAM里面去的话，可以在这个DataA前面，加一个const
 这样就可以将DataA定义在Flash里面*/

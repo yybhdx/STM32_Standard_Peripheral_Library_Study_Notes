@@ -1,6 +1,7 @@
 #include "stm32f10x.h"                  // Device header
 #include "Delay.h"
 #include "OLED.h"
+#include "MyDMA.h"
 
 // 定义DMA转运的源端数组
 uint8_t DataA[] = {0X01, 0X02, 0X03, 0X04}; // 源端数组

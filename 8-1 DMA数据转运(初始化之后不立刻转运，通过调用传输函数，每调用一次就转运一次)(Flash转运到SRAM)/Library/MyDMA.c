@@ -25,15 +25,16 @@ void MyDMA_Init(uint32_t AddrA,uint32_t AddrB, uint32_t Size)
 	DMA_InitStruct.DMA_MemoryBaseAddr = AddrB; // 外设数据寄存器的基地址为AddrB
 	DMA_InitStruct.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;// 存储器数据宽度为:DMA_MemoryDataSize_Byte(8位)
 	DMA_InitStruct.DMA_MemoryInc = DMA_MemoryInc_Enable; // 存储器地址是否递增:地址递增
+	
 	DMA_InitStruct.DMA_DIR = DMA_DIR_PeripheralSRC; // 数据传输方向:外设到存储器
 	DMA_InitStruct.DMA_BufferSize = Size; // 待传输次数：Size(传输Size次)
-	DMA_InitStruct.DMA_Mode = DMA_Mode_Normal; // DMA传输模式:正常模式
+	DMA_InitStruct.DMA_Mode = DMA_Mode_Normal; // DMA传输模式:正常模式(软件触发不能使用循环模式，因为软件触发是想以最快的速度将计数器减为0。如果加上循环模式，那么DMA就停不下来了)
 	DMA_InitStruct.DMA_M2M = DMA_M2M_Enable; // DMA是否应用于存储器到存储器模式:使能存储器到存储器模式(使用软件触发)
 	DMA_InitStruct.DMA_Priority = DMA_Priority_Medium; // 通道优先级：中等优先级
 	
 	// 指定要初始化DMA1通道1
 	// 将结构体DMA_InitStruct里面的参数配置到DMA1通道1的位置里面去
-	// 这里因为是存储器到存储器之间的转运 用的是软件触发，所以通道可以任意选择
+	// 这里因为是存储器到存储器之间的转运 用的是软件触发，所以通道可以任意选择(每个DMA通道都有软件触发)
 	DMA_Init(DMA1_Channel1, &DMA_InitStruct);
 	
 	//DMA转运有三个条件，缺一不可
@@ -77,9 +78,9 @@ void MyDMA_Transfer(void)
 	// 查询DMA传输过程中的各种状态标志
 	// 查询DMA1控制器通道1的传输完成标志
 	// DMA1_FLAG_TC1：表示 DMA1 的通道1的传输完成（Transfer Complete）标志
-//	返回值：FlagStatus枚举类型，返回标志位的状态。
-//	SET：表示指定的标志位被置位，对应事件已发生。
-//	RESET：表示指定的标志位被清除，对应事件尚未发生
+	// 返回值：FlagStatus枚举类型，返回标志位的状态。
+	// SET：表示指定的标志位被置位，对应事件已发生。
+	// RESET：表示指定的标志位被清除，对应事件尚未发生
 	// 如果没有完成 就一直循环等待
 	while(DMA_GetFlagStatus(DMA1_FLAG_TC1) == RESET);
 	
