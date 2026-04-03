@@ -162,3 +162,31 @@ void Serial_Printf(char *format, ...)
 	Serial_SendString(String);
 }
 
+//// hal库的重定向函数
+//int my_printf(UART_HandleTypeDef *huart, const char *format, ...)
+//{
+//  char buffer[512]; // 定义一??缓冲区，用于存储格式化后的字符串
+//  va_list arg;      // 定义一????变参数列??
+//  int len;          // 定义一??变量，用于存储格式化后字符串的长??
+
+//  // 初???化??变参数列??，指向???一????变参??
+//  va_start(arg, format);
+//  // 使用 vsnprintf 函数将格式化字???串写入缓冲??
+//  // vsnprintf 返回格式化后字???串的长??
+//  len = vsnprintf(buffer, sizeof(buffer), format, arg);
+
+//  // 清理??变参数列??
+//  va_end(arg);
+
+//  // 使用 HAL 库函数，通过 UART 发送缓冲区??的数??
+//  // 参数说明??
+//  // huart：UART 句柄
+//  // (uint8_t *)buffer：转???? uint8_t 类型的缓冲区指针
+//  // (uint16_t)len：转???? uint16_t 类型的字符串长度
+//  // 0xFF：超时等待??
+//  HAL_UART_Transmit(huart, (uint8_t *)buffer, (uint16_t)len, 0xFF);
+
+//  // 返回格式化后字???串的长??
+//  return len;
+//}
+

@@ -22,11 +22,11 @@ void Serial_Init(void)
 	// 3.配置USART，直接使用一个结构体，就可以把里面所有的参数都配置好了
 	USART_InitTypeDef USART_InitStruct;
 	USART_InitStruct.USART_BaudRate = 9600; // 波特率配置成9600
-	USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None; // 硬件流控（RTS/CTS）：无硬件流控
+	USART_InitStruct.USART_HardwareFlowControl = USART_HardwareFlowControl_None; // 硬件流控（RTS/CTS(防止发送方发得太快，导致接收方处理不过来而丢失数据)）：无硬件流控
 	USART_InitStruct.USART_Mode = USART_Mode_Tx ; // 使能发送 (Transmitter)
 	USART_InitStruct.USART_Parity = USART_Parity_No; // 无奇偶校验 (最常用)
 	USART_InitStruct.USART_StopBits = USART_StopBits_1; // 1位停止位 (最常用)
-	USART_InitStruct.USART_WordLength = USART_WordLength_8b; // 8位数据 (最常用)
+	USART_InitStruct.USART_WordLength = USART_WordLength_8b; // 数据位：8位数据 (最常用)
 	USART_Init(USART1, &USART_InitStruct);
 	
 	// 使能串口1

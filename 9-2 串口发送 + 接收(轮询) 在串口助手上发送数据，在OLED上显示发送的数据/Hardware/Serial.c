@@ -144,6 +144,22 @@ int fputc(int ch, FILE *f)
 	return ch;
 }
 
+//// HAL库的串口重定向函数
+//int fputc(int ch, MY_FILE *str)
+//{
+//  // HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 10);  这是 STM32 HAL 库中用来发送数??到串口的函数??
+//  //  以后使用的时候只需?? printf 输出，数??就会通过 huart1 发出
+//  //   参数	                   ????
+//  // &huart1	       串口句柄，表示你要用???? UART（比?? USART1??
+//  // (uint8_t *)&ch	 要发送的数据指针（这里是要发送的那个字???）
+//  // 1	             发送数??长度：只发一??字节
+//  // 10	             超时时间，单位是????
+//  HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 10);
+
+//  // 返回发送的字???，这???合 fputc() 的函数定义??
+//  return ch;
+//}
+
 // 封装Sprintf为可变参数格式
 // char *format用来接收格式化字符串 
 // ...用来接收可变参数列表
