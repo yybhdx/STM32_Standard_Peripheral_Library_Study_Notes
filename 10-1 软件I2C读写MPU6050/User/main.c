@@ -27,6 +27,11 @@ int main(void)
 	
 	/*显示ID号*/
 	OLED_ShowString(1, 1, "ID:");		//显示静态字符串
+	
+	/*
+	 底层调用链：MPU6050_GetID() → MPU6050_ReadReg(0x75) → 通过软件 I2C 读取 MPU6050 的 WHO_AM_I
+	寄存器。该寄存器的默认值应为 0x68，即 MPU6050 的设备 ID。
+	*/
 	ID = MPU6050_GetID();				//获取MPU6050的ID号
 	OLED_ShowHexNum(1, 4, ID, 2);		//OLED显示ID号
 	

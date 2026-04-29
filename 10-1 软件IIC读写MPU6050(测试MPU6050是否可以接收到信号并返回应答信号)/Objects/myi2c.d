@@ -1,4 +1,4 @@
-.\objects\myi2c.o: ..\4-2 OLED\Hardware\MyI2C.c
+.\objects\myi2c.o: ..\10-2 硬件I2C读写MPU6050(成功实现)\Hardware\MyI2C.c
 .\objects\myi2c.o: .\Start\stm32f10x.h
 .\objects\myi2c.o: .\Start\core_cm3.h
 .\objects\myi2c.o: D:\Software\Keil\keil_Core\ARM\ARMCC\Bin\..\include\stdint.h

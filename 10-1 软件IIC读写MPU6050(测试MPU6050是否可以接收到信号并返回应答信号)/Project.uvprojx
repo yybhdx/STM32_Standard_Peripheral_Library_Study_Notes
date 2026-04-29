@@ -705,14 +705,29 @@
               <FilePath>.\Hardware\OLED_Font.h</FilePath>
             </File>
             <File>
+              <FileName>MPU6050.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\10-2 硬件I2C读写MPU6050(成功实现)\Hardware\MPU6050.c</FilePath>
+            </File>
+            <File>
+              <FileName>MPU6050.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\10-2 硬件I2C读写MPU6050(成功实现)\Hardware\MPU6050.h</FilePath>
+            </File>
+            <File>
+              <FileName>MPU6050_Reg.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\10-2 硬件I2C读写MPU6050(成功实现)\Hardware\MPU6050_Reg.h</FilePath>
+            </File>
+            <File>
               <FileName>MyI2C.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\4-2 OLED\Hardware\MyI2C.c</FilePath>
+              <FilePath>..\10-2 硬件I2C读写MPU6050(成功实现)\Hardware\MyI2C.c</FilePath>
             </File>
             <File>
               <FileName>MyI2C.h</FileName>
               <FileType>5</FileType>
-              <FilePath>..\4-2 OLED\Hardware\MyI2C.h</FilePath>
+              <FilePath>..\10-2 硬件I2C读写MPU6050(成功实现)\Hardware\MyI2C.h</FilePath>
             </File>
           </Files>
         </Group>
