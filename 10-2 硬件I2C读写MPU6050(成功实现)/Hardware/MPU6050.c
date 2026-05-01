@@ -215,11 +215,26 @@ void MPU6050_Init(void)
 	// 第三步，初始化I2C外设，使用结构体，对整个I2C进行配置
 	I2C_InitTypeDef I2C_InitStruct;
 	I2C_InitStruct.I2C_Mode = I2C_Mode_I2C; // 设置I2C的工作模式为标准I2C模式
+	
+	/*
+	标准模式：100000（100kHz） 0<a<=100KHZ(标准)
+	快速模式：400000（400kHz）100KHZ<a<=400KHZ(快速)
+	*/
 	I2C_InitStruct.I2C_ClockSpeed = 50000; // 频率设置为50KHZ
 	I2C_InitStruct.I2C_DutyCycle = I2C_DutyCycle_2; // 表示占空比为2:1，低电平时间和高电平时间是2:1的比例关系 // 因为占空比仅在快速模式（时钟频率高于100kHz）下需要配置。 所以这里配置了也没用
 	I2C_InitStruct.I2C_Ack = I2C_Ack_Enable; // I2C_Ack_Enable（使能应答）
+	
+	/*
+	指定STM32作为从机，可以响应7位地址还是10位地址。	
+	*/
 	I2C_InitStruct.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit; // 定义I2C接口将应答7位地址还是10位地址。I2C_AcknowledgedAddress_7bit（7位地址）
-	I2C_InitStruct.I2C_OwnAddress1 =  0X00; // 我们STM32在那时不需要做从机呗别人使唤，所以这个地址可以随便给一个，只要不和总线上其他设备的地址重复就行
+	
+	/*
+	设置STM32自身的第一个I2C设备地址（7位或10位地址）。当STM32作为从机时，此地址用于被主机寻址。
+	如果I2C_AcknowledgedAddress参数选择了响应7位地址，那么这里就给STM32指定一个自身的7位地址
+	，若选择了10位地址那么这里就给STM32指定一个自身的10位地址
+	*/
+	I2C_InitStruct.I2C_OwnAddress1 =  0X00; // 我们STM32在那时不需要做从机被别人使唤，所以这个地址可以随便给一个，只要不和总线上其他设备的地址重复就行
 	I2C_Init(I2C2, &I2C_InitStruct);
 	
 	// 第四步，I2C_Cmd();，使能I2C2

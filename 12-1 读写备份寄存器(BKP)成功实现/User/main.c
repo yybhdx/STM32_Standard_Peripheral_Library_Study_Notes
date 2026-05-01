@@ -42,7 +42,7 @@ int main(void)
 	/* 接下来就能进行读取和写入BKP了*/
 	
 //	// BKP_WriteBackupRegister()向STM32微控制器的BKP（备份）寄存器写入数据
-//	// 向BKP_DR1中写入数据0x1234
+//	// 向BKP_DR1中写入数据0x1234，之所以要写入16位，即2字节的数据，是因为其BKP_DR1到 BKP_DR10（可存储20字节）每一个都可以存储2字节
 //	BKP_WriteBackupRegister(BKP_DR1, 0x1234);
 //	
 //	// BKP_ReadBackupRegister()从STM32微控制器的指定备份寄存器（BKP）中读取一个16位的数据
@@ -58,7 +58,9 @@ int main(void)
 //		* @param  Length 要显示数字的长度，范围：1~8
 //		* @retval 无
 //		*/
-//	OLED_ShowHexNum(1, 1, BKP_ReadBackupRegister(BKP_DR1), 4); // OLED显示1234
+//   由于 1 字节 = 2 个十六进制位，所以 4 字节的数据，最长需要 8 个十六进制位来显示
+//   如果你要显示 uint16_t (16位/2字节)，Length 设为 4（BKP 寄存器属于这一种）。
+//   OLED_ShowHexNum(1, 1, BKP_ReadBackupRegister(BKP_DR1), 4); // OLED显示1234
 	
 	while (1)
 	{
