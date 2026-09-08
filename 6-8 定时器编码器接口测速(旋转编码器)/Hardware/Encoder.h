@@ -1,10 +1,10 @@
 #ifndef __ENCODER_H
 #define __ENCODER_H
 
-/*Ğı×ª±àÂëÆ÷³õÊ¼»¯*/
+/*æ—‹è½¬ç¼–ç å™¨åˆå§‹åŒ–*/
 void Encoder_Init(void);
 
-// ·µ»ØCNTµÄÖµ
+// è·å–CNTçš„å€¼
 int16_t Encoder_Get(void);
 
 #endif
